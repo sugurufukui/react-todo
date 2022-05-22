@@ -4,14 +4,11 @@ import "./styles.css";
 
 export const App = () => {
   const [todoText, setTodoText] = useState("");
-  const [incompleteTodos, setIncompleteTodos] = useState([
-    "これからTODO1",
-    "これからTODO2"
-  ]);
-  const [completeTodos, setCompleteTodos] = useState(["終わったTODO1"]);
+  const [incompleteTodos, setIncompleteTodos] = useState([]);
+  const [completeTodos, setCompleteTodos] = useState([]);
 
   const onChangeTodoText = (event) => setTodoText(event.target.value);
-
+  //追加ボタン機能
   const onClickAdd = () => {
     if (todoText === "") return;
     const newTodos = [...incompleteTodos, todoText];
@@ -19,12 +16,14 @@ export const App = () => {
     setTodoText("");
   };
 
+  //削除ボタン機能
   const onClickDelete = (index) => {
     const newTodos = [...incompleteTodos];
     newTodos.splice(index, 1);
     setIncompleteTodos(newTodos);
   };
 
+  //完了ボタン機能
   const onClickComplete = (index) => {
     const newIncompleteTodos = [...incompleteTodos];
     newIncompleteTodos.splice(index, 1);
@@ -32,6 +31,16 @@ export const App = () => {
     const newCompleteTodos = [...completeTodos, incompleteTodos[index]];
     setIncompleteTodos(newIncompleteTodos);
     setCompleteTodos(newCompleteTodos);
+  };
+
+  //戻すボタン機能
+  const onClickBack = (index) => {
+    const newCompleteTodos = [...completeTodos];
+    newCompleteTodos.splice(index, 1);
+    //未完了のTODOに追加
+    const newIncompleteTodos = [...incompleteTodos, completeTodos[index]];
+    setCompleteTodos(newCompleteTodos);
+    setIncompleteTodos(newIncompleteTodos);
   };
 
   return (
@@ -63,12 +72,12 @@ export const App = () => {
       <div className="complete-area">
         <p className="title">完了したTODO</p>
         <ul>
-          {completeTodos.map((todo) => {
+          {completeTodos.map((todo, index) => {
             return (
               <li key={todo}>
                 <div className="list-row">
                   <p className="right">{todo}</p>
-                  <button>戻す</button>
+                  <button onClick={() => onClickBack(index)}>戻す</button>
                 </div>
               </li>
             );
